@@ -1,0 +1,4 @@
+strategy:
+  name: baseline
+  params:
+    placeholder: true

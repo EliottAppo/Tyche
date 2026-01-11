@@ -1,0 +1,10 @@
+backtest:
+  start: "2020-01-01"
+  end: "2025-12-31"
+  rebalance: weekly
+  leverage_max: 2.0
+  allow_short: true
+
+  costs:
+    fees_bps: 3.0
+    slippage_bps: 2.0

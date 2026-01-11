@@ -1,0 +1,8 @@
+project:
+  name: tyche
+  timezone: Asia/Singapore
+  frequency: weekly
+
+paths:
+  data_dir: data/
+  reports_dir: research/reports/

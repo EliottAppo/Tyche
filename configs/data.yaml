@@ -1,0 +1,4 @@
+data:
+  provider: example
+  universe_source: example
+  storage: local
