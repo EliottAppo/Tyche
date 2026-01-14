@@ -1,49 +1,61 @@
 # Tyche
 
-Tyche is a crypto trading research project.  
-The goal is to build a modular, reproducible platform to research alpha, develop factor models (Barra-like adapted to crypto), and evaluate strategies via a strategy-agnostic backtesting engine.
+Tyche is a modular quantitative research and simulation codebase.  
+The repository is organized to clearly separate exploration work from production-quality components, and to support reproducible runs driven by versioned configuration.
 
-This repository is intentionally structured to separate:
-- **Alpha research** (fast iteration, notebooks, experiments)
-- **Data** (ingestion, normalization, storage)
-- **Features / factors** (standardized computation pipelines)
-- **Strategies** (plug-in implementations consuming features and producing targets)
-- **Backtesting** (engine + costs + metrics + reporting)
-- **Execution** (simulation now; live adapters later)
+## Repository layout
 
-## Principles
+### 1) Production code (`src/tyche/`)
+This is the stable, testable code that can be reused across experiments.
 
-- **Separation of concerns**: each layer has a single responsibility.
-- **Reproducibility**: runs are configuration-driven and versioned.
-- **Modularity**: swap data sources, strategies, and cost models without refactoring the whole system.
-- **Strategy-agnostic backtesting**: the engine does not embed alpha logic.
-- **Extensibility**: a clean path toward live execution (later) without contaminating research/backtest layers.
+- `core/`  
+  Shared foundations: contracts (schemas/conventions), interfaces, configuration helpers, logging, and utilities.
 
-## Repository layout (high-level)
+- `data/`  
+  Data acquisition/normalization/storage and dataset builders (i.e., producing standardized, ready-to-consume datasets).
 
-### Production code (`src/tyche/`)
-- `core/`: shared contracts, interfaces, configuration, logging, utilities
-- `data/`: ingestion, normalization, storage, dataset builders
-- `features/`: transforms, factor library, feature pipelines
-- `universe/`: eligibility rules and universe construction
-- `strategies/`: plug-in strategy implementations (baseline, factor models, overlays)
-- `portfolio/`: portfolio construction and constraints
-- `backtest/`: engine, cost models, metrics, reporting
-- `execution/`: simulation (now) and live adapters (later)
+- `features/`  
+  Feature engineering and factor computation pipelines:
+  transforms (primitives), factor library, and orchestration.
 
-### Research area (`research/`)
-- `notebooks/`: exploratory analysis and prototyping
-- `experiments/`: reproducible experiment scripts
-- `reports/`: generated outputs (tables, plots, tear sheets)
+- `universe/`  
+  Eligibility rules and universe construction (what is included/excluded over time).
 
-### Run scaffolding
-- `configs/`: versioned configuration files (data/backtest/strategy)
-- `scripts/`: simple entrypoints (download data, build features, run backtests)
-- `docs/`: architecture and decisions (ADRs)
-- `tests/`: unit and integration tests
+- `strategies/`  
+  Plug-in implementations that turn inputs (datasets + features) into targets/decisions.
+  Includes `baseline/` and more advanced model families.
 
-## Getting started
+- `portfolio/`  
+  Portfolio construction and constraints (how targets are translated into allocations under rules).
 
-### Requirements
-- Python 3.11+
+- `backtest/`  
+  Strategy-agnostic simulation engine plus costs, metrics, and reporting.
 
+- `execution/`  
+  Execution layer:
+  simulation components now; adapters for external execution later.
+
+- `reporting/`  
+  Shared reporting utilities used across modules.
+
+### 2) Research area (`research/`)
+This is the exploration workspace. It can move fast without destabilizing production code.
+
+- `notebooks/` — exploratory analysis and prototyping
+- `experiments/` — reproducible experiment scripts
+- `reports/` — generated outputs (tables/plots/tear sheets)
+
+**Rule of thumb:** notebooks explore; production code lives in `src/tyche/`.
+
+### 3) Run scaffolding
+- `configs/`  
+  Versioned configuration files for reproducible runs (data, simulation, strategy parameters).
+
+- `scripts/`  
+  Simple entrypoints that orchestrate runs (download/build/run), driven by `configs/`.
+
+- `docs/`  
+  Architecture notes and ADRs (Architecture Decision Records) to document key choices.
+
+- `tests/`  
+  Unit and integration tests.
