@@ -2,15 +2,23 @@ import pandas as pd
 import numpy as np
 
 
-import numpy as np
+
+def power_distance(series_a, series_b, power=1, ord=1):
+    return np.linalg.norm((series_a**power) - (series_b**power), ord=ord)
+
+def id(arr: np.array)-> np.array:
+    return arr
 
 def pattern_estimations_near_contrarian(
     series,
     window=20,
     horizon=5,
     k=5,
-    n=5
+    n=5,
+    f_distance=power_distance,
+    f_treatment=id
 ):
+
     """
     series  : np.array ou pd.Series de returns
     window  : longueur du pattern
@@ -24,12 +32,13 @@ def pattern_estimations_near_contrarian(
     series = np.asarray(series)
     current_pattern = series[-window:]
     
+    
     distances = []
 
     # calcul des distances
     for i in range(len(series) - window - horizon + 1):
         past_pattern = series[i:i + window]
-        dist = np.linalg.norm(past_pattern - current_pattern)
+        dist = f_distance(f_treatment(past_pattern), f_treatment(current_pattern))
         distances.append((dist, i))
 
     # tri par distance
